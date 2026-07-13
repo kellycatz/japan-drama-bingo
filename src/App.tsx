@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, Check, CheckCircle2, Download, Film, RotateCcw, Sparkles } from 'lucide-react'
-import { toPng } from 'html-to-image'
+import { toBlob } from 'html-to-image'
 import { ALL_DRAMAS, CATALOG, YEARS, type Drama } from './catalog'
 
 const STORAGE_KEY = 'japan-tv-bingo:watched'
@@ -33,9 +33,11 @@ function TmdbCredit() {
 }
 
 function App() {
+  const debugMode = new URLSearchParams(window.location.search).has('debug')
   const [watched, setWatched] = useState<Set<string>>(loadWatched)
   const [view, setView] = useState<'select' | 'poster'>('select')
   const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState('')
   const posterRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -59,10 +61,13 @@ function App() {
     if (!posterRef.current || exporting) return
     const poster = posterRef.current
     setExporting(true)
+    setExportError('')
     poster.classList.add('is-exporting')
+    let exportStage = '准备海报'
     try {
       await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
       await document.fonts.ready
+      exportStage = '加载海报图片'
       const images = [...poster.querySelectorAll('img')]
       await Promise.all(images.map((image) => image.complete ? image.decode().catch(() => undefined) : new Promise<void>((resolve) => {
         image.addEventListener('load', () => resolve(), { once: true })
@@ -71,9 +76,11 @@ function App() {
       const exportWidth = 1180
       const exportHeight = poster.scrollHeight
       const isMobileDevice = window.matchMedia('(max-width: 650px)').matches || /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      const dataUrl = await toPng(poster, {
+      exportStage = '渲染 PNG'
+      const blob = await toBlob(poster, {
         cacheBust: true,
         pixelRatio: isMobileDevice ? 1 : 2,
+        skipFonts: true,
         width: exportWidth,
         height: exportHeight,
         backgroundColor: '#efe5cf',
@@ -85,13 +92,31 @@ function App() {
           transform: 'none',
         },
       })
+      if (!blob) throw new Error('浏览器未能创建 PNG 文件')
+
+      exportStage = '保存文件'
+      const objectUrl = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.download = `我的日剧世代Bingo-${watched.size}of${ALL_DRAMAS.length}.png`
-      link.href = dataUrl
+      link.href = objectUrl
+      document.body.appendChild(link)
       link.click()
+      link.remove()
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
     } catch (error) {
       console.error('海报生成失败', error)
-      window.alert('海报生成失败，请稍后重试。')
+      const detail = error instanceof Error ? error.message : String(error)
+      const debugInfo = [
+        `阶段: ${exportStage}`,
+        `错误: ${detail}`,
+        `设备: ${navigator.userAgent}`,
+        `视口: ${window.innerWidth}x${window.innerHeight}`,
+        `海报: ${poster.scrollWidth}x${poster.scrollHeight}`,
+        `已看: ${watched.size}/${ALL_DRAMAS.length}`,
+        error instanceof Error && error.stack ? `堆栈:\n${error.stack}` : '',
+      ].filter(Boolean).join('\n')
+      if (debugMode) setExportError(debugInfo)
+      else window.alert(`海报生成失败（${exportStage}）\n${detail.slice(0, 160)}`)
     } finally {
       poster.classList.remove('is-exporting')
       setExporting(false)
@@ -107,6 +132,14 @@ function App() {
             <Download size={18} />{exporting ? '正在生成…' : '下载高清 PNG'}
           </button>
         </div>
+
+        {debugMode && exportError && (
+          <section className="export-debug" aria-live="assertive">
+            <strong>海报生成调试信息</strong>
+            <pre>{exportError}</pre>
+            <button className="button button-ghost" onClick={() => navigator.clipboard.writeText(exportError)}>复制错误信息</button>
+          </section>
+        )}
 
         <div className="share-poster all-years-poster" ref={posterRef}>
           <div className="poster-registration">DRAMA ARCHIVE · PERSONAL EDITION</div>

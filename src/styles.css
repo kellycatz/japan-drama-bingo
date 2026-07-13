@@ -121,6 +121,10 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--yellow); outlin
 .button-ghost:hover { border-color: white; background: rgba(255,255,255,.06); }
 .poster-toolbar .button-primary { box-shadow: 4px 4px 0 #e5ad38; }
 .poster-toolbar .button-primary:hover:not(:disabled) { box-shadow: 7px 7px 0 #e5ad38; }
+.export-debug { max-width: 1180px; margin: 0 auto 24px; padding: 16px; border: 1px solid #e5ad38; background: #171614; color: #fff; }
+.export-debug > strong { color: #e5ad38; }
+.export-debug pre { max-height: 260px; margin: 12px 0; padding: 12px; overflow: auto; background: #050505; color: #f3eee5; font: 11px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.export-debug .button { padding: 8px 12px; font-size: 12px; }
 
 .share-poster { width: min(800px, 100%); aspect-ratio: 4/5; min-height: 1000px; margin: auto; padding: 34px 36px 26px; position: relative; overflow: hidden; background: #efe5cf; color: var(--ink); box-shadow: 0 30px 100px rgba(0,0,0,.55); display: flex; flex-direction: column; }
 .all-years-poster { width: min(1180px, 100%); aspect-ratio: auto; min-height: 0; padding: 34px 38px 28px; }
