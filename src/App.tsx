@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, Check, CheckCircle2, Download, Film, RotateCcw, Sparkles } from 'lucide-react'
 import { toBlob } from 'html-to-image'
 import { ALL_DRAMAS, CATALOG, YEARS, type Drama } from './catalog'
+import { renderMobilePoster } from './mobilePosterExport'
 
 const STORAGE_KEY = 'japan-tv-bingo:watched'
 
@@ -77,7 +78,7 @@ function App() {
       const exportHeight = poster.scrollHeight
       const isMobileDevice = window.matchMedia('(max-width: 650px)').matches || /iPhone|iPad|iPod/i.test(navigator.userAgent)
       exportStage = '渲染 PNG'
-      const blob = await toBlob(poster, {
+      const blob = isMobileDevice ? await renderMobilePoster(watched) : await toBlob(poster, {
         cacheBust: true,
         pixelRatio: isMobileDevice ? 1 : 2,
         skipFonts: true,
