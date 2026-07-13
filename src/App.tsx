@@ -57,19 +57,23 @@ function App() {
 
   const downloadPoster = async () => {
     if (!posterRef.current || exporting) return
+    const poster = posterRef.current
     setExporting(true)
+    poster.classList.add('is-exporting')
     try {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
       await document.fonts.ready
-      const images = [...posterRef.current.querySelectorAll('img')]
+      const images = [...poster.querySelectorAll('img')]
       await Promise.all(images.map((image) => image.complete ? image.decode().catch(() => undefined) : new Promise<void>((resolve) => {
         image.addEventListener('load', () => resolve(), { once: true })
         image.addEventListener('error', () => resolve(), { once: true })
       })))
       const exportWidth = 1180
-      const exportHeight = posterRef.current.scrollHeight
-      const dataUrl = await toPng(posterRef.current, {
+      const exportHeight = poster.scrollHeight
+      const isMobileDevice = window.matchMedia('(max-width: 650px)').matches || /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      const dataUrl = await toPng(poster, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: isMobileDevice ? 1 : 2,
         width: exportWidth,
         height: exportHeight,
         backgroundColor: '#efe5cf',
@@ -89,6 +93,7 @@ function App() {
       console.error('海报生成失败', error)
       window.alert('海报生成失败，请稍后重试。')
     } finally {
+      poster.classList.remove('is-exporting')
       setExporting(false)
     }
   }
