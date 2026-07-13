@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync-dramas": "node scripts/sync-dramas.mjs",
+    "download-posters": "node scripts/download-posters.mjs",
+    "sync-all": "npm run sync-dramas && npm run download-posters"
   },
   "dependencies": {
     "html-to-image": "^1.11.13",

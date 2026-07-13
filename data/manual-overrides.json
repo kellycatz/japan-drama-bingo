@@ -1,0 +1,68 @@
+{
+  "2008:魔王": {
+    "tmdbId": 7717
+  },
+  "2009:新参者": {
+    "tmdbId": 45976
+  },
+  "2010:SPEC": {
+    "tmdbId": 45923,
+    "displayTitle": "SPEC 超能力事件簿"
+  },
+  "2010:Mother": {
+    "tmdbId": 34633
+  },
+  "2011:妖怪人间贝姆": {
+    "tmdbId": 46228,
+    "displayTitle": "妖怪人贝姆"
+  },
+  "2013:海女": {
+    "tmdbId": 64347
+  },
+  "2014:Border": {
+    "tmdbId": 64031,
+    "displayTitle": "BORDER"
+  },
+  "2015:约会～恋爱究竟是什么呢～": {
+    "tmdbId": 72269
+  },
+  "2015:天皇的料理人": {
+    "tmdbId": 70187
+  },
+  "2015:哥哥扭蛋": {
+    "id": "brother-gacha",
+    "displayTitle": "哥哥扭蛋",
+    "originalTitle": "お兄ちゃん、ガチャ",
+    "localPoster": "/posters/2015/brother-gacha.png"
+  },
+  "2017:黑皮记事本": {
+    "tmdbId": 71980,
+    "displayTitle": "黑皮记事本"
+  },
+  "2019:东京大饭店": {
+    "tmdbId": 95718
+  },
+  "2019:我，到点下班": {
+    "tmdbId": 88646,
+    "displayTitle": "我，到点下班"
+  },
+  "2019:轮到你了": {
+    "tmdbId": 88570
+  },
+  "2020:将恋爱进行到底": {
+    "tmdbId": 97948
+  },
+  "2020:钱断情始": {
+    "tmdbId": 108074
+  },
+  "2021:我的姐姐": {
+    "tmdbId": 134151
+  },
+  "2021:最爱": {
+    "tmdbId": 135730
+  },
+  "2022:初恋": {
+    "tmdbId": 210955,
+    "displayTitle": "First Love"
+  }
+}
